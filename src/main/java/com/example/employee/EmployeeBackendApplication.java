@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EmployeeBackendApplication {
     public static void main(String[] args) {
         SpringApplication.run(EmployeeBackendApplication.class, args);
+        System.out.println("Employee Backend Application started successfully.");
     }
 }
 
