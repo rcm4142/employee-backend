@@ -1,0 +1,246 @@
+1-Download OneAgent
+wget -O Dynatrace-OneAgent-Linux-x86-1.335.58.20260423-145051.sh "https://sbh26735.live.dynatrace.com/api/v1/deployment/installer/agent/unix/default/latest?arch=x86" --header="Authorization: Api-Token "
+2- Verify signature
+wget https://ca.dynatrace.com/dt-root.cert.pem ; ( echo 'Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="--SIGNED-INSTALLER"'; echo ; echo ; echo '----SIGNED-INSTALLER' ; cat Dynatrace-OneAgent-Linux-x86-1.335.58.20260423-145051.sh ) | openssl cms -verify -CAfile dt-root.cert.pem > /dev/null
+3- Install OneAgent as the privileged user
+/bin/sh Dynatrace-OneAgent-Linux-x86-1.335.58.20260423-145051.sh --set-monitoring-mode=fullstack --set-app-log-content-access=true
+
+1- Download ActiveGate
+wget -O Dynatrace-ActiveGate-Linux-x86-1.335.20.20260403-154514.sh "https://sbh26735.live.dynatrace.com/api/v1/deployment/installer/gateway/unix/latest?arch=x86" --header="Authorization: Api-Token "
+2-Verify signature
+wget https://ca.dynatrace.com/dt-root.cert.pem ; ( echo 'Content-Type: multipart/signed; protocol="application/x-pkcs7-signature"; micalg="sha-256"; boundary="--SIGNED-INSTALLER"'; echo ; echo ; echo '----SIGNED-INSTALLER' ; cat Dynatrace-ActiveGate-Linux-x86-1.335.20.20260403-154514.sh ) | openssl cms -verify -CAfile dt-root.cert.pem > /dev/null
+3-Install ActiveGate as the privileged user
+/bin/bash Dynatrace-ActiveGate-Linux-x86-1.335.20.20260403-154514.sh
+
+sudo yum install -y stress
+sudo dnf install -y stress-ng
+stress-ng --cpu 2 --timeout 300
+stress --vm 2 --vm-bytes 512M --timeout 300
+stress-ng --cpu 4 --vm 2 --vm-bytes 1G --timeout 600s
+
+
+===========================================================================================================
+
+https://github.com/CloudTechDevOps/Module-Three-Tier.git
+
+Ramesh@DESKTOP-GD2LSRH MINGW64 /d/terraform-practice/Module-Three-Tier
+$ aws configure
+
+Ramesh@DESKTOP-GD2LSRH MINGW64 /d/terraform-practice/Module-Three-Tier/ROOT (main)
+$ cd envs/
+
+Ramesh@DESKTOP-GD2LSRH MINGW64 /d/terraform-practice/Module-Three-Tier/ROOT/envs (main)
+$ ls
+dev/  prod/  test/
+
+Ramesh@DESKTOP-GD2LSRH MINGW64 /d/terraform-practice/Module-Three-Tier/ROOT/envs (main)
+$ cd dev/
+
+Ramesh@DESKTOP-GD2LSRH MINGW64 /d/terraform-practice/Module-Three-Tier/ROOT/envs/dev (main)
+$ terraform init
+Initializing the backend...
+Initializing modules...
+Initializing provider plugins...
+- Reusing previous version of hashicorp/aws from the dependency lock file
+- Using previously-installed hashicorp/aws v6.38.0
+
+Terraform has been successfully initialized!
+
+===========================================================================================
+
+
+terraform plan -target=module.vpc
+terraform apply -target=module.vpc -auto-approve
+
+terraform plan -target=module.bastion
+terraform apply -target=module.bastion -auto-approve
+
+terraform plan -target=module.frontend-ec2
+terraform apply -target=module.frontend-ec2 -auto-approve
+
+terraform plan -target=module.backend-ec2
+terraform apply -target=module.backend-ec2 -auto-approve
+
+terraform plan -target=module.frontend_alb
+terraform apply -target=module.frontend_alb -auto-approve
+
+terraform plan -target=module.backend_alb
+terraform apply -target=module.backend_alb -auto-approve
+
+
+terraform plan -target=module.rds
+terraform apply -target=module.rds -auto-approve
+
+-------------------------------------
+update the backend properties files
+
+devdb
+spring.datasource.username=root
+spring.datasource.password=root
+-------------------------------------
+-----------------------------------------------------------
+
+
+terraform apply -target=module.frontend_launchtemplate -auto-approve
+terraform apply -target=module.backend_launchtemplate -auto-approve
+terraform apply -target=module.asg-backend -auto-approve
+terraform apply -target=module.asg-frontend -auto-approve
+
+
+============================================
+
+Back end:
+
+   https://github.com/rcm4142/employee-backend.git
+
+db_name           = "bookdb"
+db_username       = "admin"
+db_password       = "SuperSecretPass123"
+https://github.com/rcm4142/employee-backend.git
+book-rds.c9w60ceg2lg4.us-east-1.rds.amazonaws.com
+============================================
+BACKEND Start:
+
+[ec2-user@ip-10-0-1-42 ~]$ sudo su -
+[root@ip-10-0-1-42 ~]# git clone https://github.com/CloudTechDevOps/2nd10WeeksofCloudOps-main.git
+Cloning into '2nd10WeeksofCloudOps-main'...
+
+
+
+
+install maven:
+
+$ yum list java*
+$ yum install java-21-amazon-corretto.x86_64
+$ yum install maven -y
+$ mvn clean install
+ i faced below issue with mvn clean install:
+
+--------------------------------------------------------------------------------------------------------------------------------------
+mvn install is failing with below error
+[INFO] Compiling 5 source files with javac [debug parameters release 21] to target/classes
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.531 s
+[INFO] Finished at: 2026-04-18T15:45:23Z
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-compiler-plugin:3.13.0:compile (default-compile) on project employee-backend: Fatal error compiling: error: release version 21 not supported -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+--------------------------------------------------------------------------------------------------------------------------------------
+
+export JAVA_HOME=/usr/lib/jvm/java-21-amazon-corretto
+export PATH=$JAVA_HOME/bin:$PATH
+
+mvn clean install
+mvn clean package
+
+$ mvn clean install -DskipTests  -- not needed after following above steps
+
+
+[root@ip-10-0-1-42 backend]# yum install mariadb105-server -y
+
+[root@ip-10-0-1-42 backend]# mysql -h book-rds.cep64cy2yy88.us-east-1.rds.amazonaws.com -u admin -p
+
+
+[root@ip-10-0-1-181 target]# java -jar employee-backend.jar
+
+==================================================================================================
+[root@ip-10-0-1-42 ~]# ls
+2nd10WeeksofCloudOps-main
+[root@ip-10-0-1-42 ~]# cd 2nd10WeeksofCloudOps-main/
+[root@ip-10-0-1-42 2nd10WeeksofCloudOps-main]# ls
+[root@ip-10-0-1-42 2nd10WeeksofCloudOps-main]# cd backend/
+[root@ip-10-0-1-42 backend]# ls
+Dockerfile  index.js  package-lock.json  package.json  test.sql
+
+
+[root@ip-10-0-1-42 backend]# yum install mariadb105-server -y
+
+[root@ip-10-0-1-42 backend]# mysql -h book-rds.cep64cy2yy88.us-east-1.rds.amazonaws.com -u admin -p SuperSecretPass123
+
+[root@ip-10-0-1-42 backend]# mysql -h book-rds.c9scwesmyqoc.us-east-1.rds.amazonaws.com -u admin -pSuperSecretPass123 < test.sql
+
+sudo dnf install -y nodejs
+
+cd backend
+npm install
+npm install dotenv
+npm install -g pm2
+pm2 start index.js -name node-app
+pm2 startup
+sudo systemctl enable pm2-root
+pm2 save
+
+
+$ pm2 unstartup systemd
+[PM2] Saving current process list...
+[PM2] Successfully saved in /root/.pm2/dump.pm2
+[root@ip-10-0-1-42 backend]# pm2 status
+┌────┬───────┬─────────────┬─────────┬─────────┬──────────┬────────┬──────┬───────────┬──────────┬──────────┬──────────┬──────────┐
+│ id │ name  │ namespace   │ version │ mode    │ pid      │ uptime │ ↺    │ status    │ cpu      │ mem      │ user     │ watching │
+├────┼───────┼─────────────┼─────────┼─────────┼──────────┼────────┼──────┼───────────┼──────────┼──────────┼──────────┼──────────┤
+│ 0  │ -a    │ default     │ 1.0.0   │ fork    │ 33172    │ 15s    │ 0    │ online    │ 0%       │ 67.6mb   │ root     │ disabled │
+└────┴───────┴─────────────┴─────────┴─────────┴──────────┴────────┴──────┴───────────┴──────────┴──────────┴──────────┴──────────┘
+[root@ip-10-0-1-42 backend]# 
+
+
+Go to font-end EC2 instance:
+
+[ec2-user@ip-10-0-1-239 ~]$ sudo su -
+
+[root@ip-10-0-1-239 ~]# yum install git -y
+
+[root@ip-10-0-1-239 ~]# git clone https://github.com/CloudTechDevOps/2nd10WeeksofCloudOps-main.git
+Cloning into '2nd10WeeksofCloudOps-main'...
+
+2nd10WeeksofCloudOps-main
+[root@ip-10-0-1-239 ~]# cd 2nd10WeeksofCloudOps-main/
+[root@ip-10-0-1-239 2nd10WeeksofCloudOps-main]# ls -a
+.  ..  .git  Jenkins-Pipeline-Code  README.md  architecture.gif  backend  client  docker-compose-process-note.md  docker-compose.yaml  eks-terraform  kubernetes-files  mysql  rds  terraform_main_ec2
+[root@ip-10-0-1-239 2nd10WeeksofCloudOps-main]# cd client/
+[root@ip-10-0-1-239 client]# ls -a
+.  ..  Dockerfile  entrypoint.sh  package-lock.json  package.json  proxy.conf  public  src
+[root@ip-10-0-1-239 client]# cd src/
+[root@ip-10-0-1-239 src]# ls -a
+.  ..  App.css  App.js  App.test.js  index.css  index.js  logo.svg  pages  reportWebVitals.js  setupTests.js  style.scss
+[root@ip-10-0-1-239 src]# cd pages/
+[root@ip-10-0-1-239 pages]# ls
+Add.jsx  Books.jsx  Update.jsx  config.js
+[root@ip-10-0-1-239 pages]# vi config.js
+[root@ip-10-0-1-239 pages]# cd ..
+[root@ip-10-0-1-239 src]# cd ..
+[root@ip-10-0-1-239 client]# ls
+Dockerfile  entrypoint.sh  package-lock.json  package.json  proxy.conf  public  src
+[root@ip-10-0-1-239 client]# sudo dnf install -y nodejs
+sudo yum install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+
+
+
+sudo dnf install -y nodejs
+sudo yum install nginx
+sudo systemctl start nginx
+sudo systemctl enable nginx
+
+
+npm install 
+npm run build
+sudo cp -r build/* /usr/share/nginx/html
+
+
+=============================================
+
+sudo yum install -y stress
+sudo dnf install -y stress-ng
+stress-ng --cpu 2 --timeout 300
+stress --vm 2 --vm-bytes 512M --timeout 300
+stress-ng --cpu 4 --vm 2 --vm-bytes 1G --timeout 600s
+
