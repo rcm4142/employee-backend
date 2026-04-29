@@ -27,5 +27,10 @@ public class EmployeeController {
     public Employee create(@Valid @RequestBody Employee employee) {
         return employeeService.create(employee);
     }
+	
+   @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello, World!";
+    }
 }
 
